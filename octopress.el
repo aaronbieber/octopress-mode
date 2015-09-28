@@ -475,13 +475,15 @@ This function returns the char value from CHOICES selected by the user."
           (goto-char (point-max))
           (insert (propertize (format "Running `%s'...\n\n" command) 'face 'font-lock-variable-name-face))))
       (let ((process
-            (start-process-shell-command
-             "octopress-server"
-             buffer
-             (concat "cd " (octopress--get-root) " && " command))))
-      (message "Server started!")
-      (set-process-sentinel process 'octopress--server-sentinel)
-      (set-process-filter process 'octopress--generic-process-filter))
+             (start-process-shell-command
+              "octopress-server"
+              buffer
+              (concat "cd " (octopress--get-root) " && "
+                      (octopress--bundler-command-prefix)
+                      command))))
+        (message "Server started!")
+        (set-process-sentinel process 'octopress--server-sentinel)
+        (set-process-filter process 'octopress--generic-process-filter))
       (octopress--maybe-redraw-status))))
 
 (defun octopress--stop-server-process ()
@@ -780,7 +782,9 @@ being used and we need to run Octopress with `bundle exec'."
 (defun octopress--run-jekyll-command (command)
   "Run a Jekyll command."
   (message "Running Jekyll...")
-  (octopress--run-command (concat "jekyll " command)))
+  (octopress--run-command
+   (concat
+    (octopress--bundler-command-prefix) "jekyll " command)))
 
 (defun octopress--run-command (command)
   "Run an Octopress-related command, sending output to the process buffer.
