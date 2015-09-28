@@ -48,7 +48,7 @@
   "Overlay for highlighting the current line.")
 
 (overlay-put octopress-highlight-current-line-overlay
-	     'face 'octopress-highlight-line-face)
+             'face 'octopress-highlight-line-face)
 
 (defvar octopress-mode-map
   (let ((map (make-sparse-keymap)))
@@ -257,7 +257,7 @@ result in newer posts appearing first in the list."
                                 "Link to: "
                                 posts
                                 '(lambda (f) (and (not (string= f "."))
-                                                  (not (string= f ".."))))))))
+                                           (not (string= f ".."))))))))
     (insert (concat "{% post_url " post " %}"))))
 
 (defun octopress--publish-unpublish (type filename)
@@ -271,7 +271,7 @@ result in newer posts appearing first in the list."
                            "publish"))))
     (if (file-exists-p (expand-file-name filename source-path))
         (if (or (eq type 'drafts)
-                (yes-or-no-p "Really unpublish this post? "))
+               (yes-or-no-p "Really unpublish this post? "))
             (progn (octopress-toggle-command-window t)
                    (octopress--run-octopress-command (concat subcommand " " filename))))
       (message "The file `%s' doesn't exist in `%s'. Try refreshing?" filename octopress-posts-directory))))
@@ -306,7 +306,7 @@ it exists and do nothing otherwise."
         (if (and octopress-buffer octopress-root)
             (progn (with-current-buffer octopress-buffer
                      (make-local-variable 'octopress-root))
-                octopress-buffer)
+                   octopress-buffer)
           (progn (kill-buffer octopress-buffer)
                  nil))))))
 
@@ -345,13 +345,13 @@ type', e.g. 'drafts or 'posts, and the cdr of the cons is the filename.
 
 If the current line of the current buffer does not have a valid thing type, this
 function returns nil."
-    (let* ((thing-type (get-text-property (line-beginning-position) 'invisible))
-           (line (buffer-substring (line-beginning-position) (line-end-position)))
-           (found (string-match "^\s*\\([^ ]*\\)" line))
-           (filename (match-string 1 line)))
-      (if (and thing-type found filename)
-          (cons thing-type (octopress--strip-text-properties filename))
-        nil)))
+  (let* ((thing-type (get-text-property (line-beginning-position) 'invisible))
+         (line (buffer-substring (line-beginning-position) (line-end-position)))
+         (found (string-match "^\s*\\([^ ]*\\)" line))
+         (filename (match-string 1 line)))
+    (if (and thing-type found filename)
+        (cons thing-type (octopress--strip-text-properties filename))
+      nil)))
 
 (defun octopress--read-char-with-toggles (prompt-suffix choices &optional default-to-on)
   "Read a selection from a menu with toggles.
@@ -393,7 +393,7 @@ This function returns the char value from CHOICES selected by the user."
                                 (future . ,future)
                                 (unpublished . ,unpublished))
                        done t)))))
-  return))
+    return))
 
 (defun octopress--get-line-type ()
   (save-excursion
@@ -421,7 +421,7 @@ This function returns the char value from CHOICES selected by the user."
          (filename (octopress--get-line-filename))
          (full-filename (octopress--expand-path-for-type filename type)))
     (if (and type
-             (file-exists-p full-filename))
+           (file-exists-p full-filename))
         (pop-to-buffer (find-file full-filename)))))
 
 (defun octopress--new-post ()
@@ -442,10 +442,10 @@ This function returns the char value from CHOICES selected by the user."
 (defun octopress--buffer-is-configured (buffer)
   "Return t if BUFFER is configured properly for Octopress."
   (and (bufferp buffer)
-       (let ((vars (buffer-local-variables
-                    (get-buffer buffer))))
-         (and (assoc 'octopress-root vars)
-              (string= (cdr (assoc 'major-mode vars)) "octopress-mode")))))
+     (let ((vars (buffer-local-variables
+                  (get-buffer buffer))))
+       (and (assoc 'octopress-root vars)
+          (string= (cdr (assoc 'major-mode vars)) "octopress-mode")))))
 
 (defun octopress--start-deploy-process ()
   (octopress--setup)
@@ -508,7 +508,7 @@ This function returns the char value from CHOICES selected by the user."
 (defun octopress--server-status ()
   (let ((server-process (get-buffer-process (octopress--buffer-name-for-type "server"))))
     (and (processp server-process)
-         (string= (process-status server-process) "run"))))
+       (string= (process-status server-process) "run"))))
 
 (defun octopress--server-status-string ()
   (if (octopress--server-status)
@@ -854,16 +854,16 @@ each kind of output."
                (let* ((filename (octopress--find-filename-in-output output)))
                  (if (file-exists-p filename)
                      (find-file filename))))
-               ((string-prefix-p "Published:" output)
-                (let ((draft (octopress--find-filename-in-output output "_drafts"))
-                      (post (octopress--find-filename-in-output output "_posts")))
-                  (if (and draft post)
-                      (octopress--swap-window-files draft post))))
-               ((string-prefix-p "Unpublished:" output)
-                (let ((draft (octopress--find-filename-in-output output "_drafts"))
-                      (post (octopress--find-filename-in-output output "_posts")))
-                  (if (and draft post)
-                      (octopress--swap-window-files post draft)))))))))
+              ((string-prefix-p "Published:" output)
+               (let ((draft (octopress--find-filename-in-output output "_drafts"))
+                     (post (octopress--find-filename-in-output output "_posts")))
+                 (if (and draft post)
+                     (octopress--swap-window-files draft post))))
+              ((string-prefix-p "Unpublished:" output)
+               (let ((draft (octopress--find-filename-in-output output "_drafts"))
+                     (post (octopress--find-filename-in-output output "_posts")))
+                 (if (and draft post)
+                     (octopress--swap-window-files post draft)))))))))
 
 (defun octopress--swap-window-files (old-filename new-filename)
   "Swap any windows displaying OLD-FILENAME to instead display NEW-FILENAME.
@@ -908,7 +908,7 @@ Return a propertized string like KEY: LABEL."
 (defun octopress--strip-text-properties(text)
   "Remove all properties from TEXT and return it."
   (set-text-properties 0 (length text) nil text)
-      text)
+  text)
 
 (defun octopress--highlight-current-line ()
   (if (octopress--thing-on-this-line)
